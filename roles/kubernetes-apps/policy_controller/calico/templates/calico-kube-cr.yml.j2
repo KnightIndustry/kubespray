@@ -45,11 +45,14 @@ rules:
     resources:
       - pods
     verbs:
+      - watch
+      - list
       - get
   # IPAM resources are manipulated when nodes are deleted.
   - apiGroups: ["crd.projectcalico.org"]
     resources:
       - ippools
+      - ipreservations
     verbs:
       - list
   - apiGroups: ["crd.projectcalico.org"]
@@ -57,6 +60,16 @@ rules:
       - blockaffinities
       - ipamblocks
       - ipamhandles
+    verbs:
+      - get
+      - list
+      - create
+      - update
+      - delete
+      - watch
+  # kube-controllers manages hostendpoints.
+  - apiGroups: ["crd.projectcalico.org"]
+    resources:
       - hostendpoints
     verbs:
       - get
@@ -72,8 +85,6 @@ rules:
       - get
       - create
       - update
-{% endif %}
-{% if calico_version is version('v3.14.0', '>=') %}
   # KubeControllersConfiguration is where it gets its config
   - apiGroups: ["crd.projectcalico.org"]
     resources:

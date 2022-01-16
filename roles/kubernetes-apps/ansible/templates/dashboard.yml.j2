@@ -189,7 +189,7 @@ spec:
 {% if dashboard_skip_login %}
             - --enable-skip-login
 {% endif %}
-            - --authentication-mode=token{% if kube_basic_auth|default(false) %},basic{% endif %}
+            - --authentication-mode=token
             # Uncomment the following line to manually specify Kubernetes API server Host
             # If not specified, Dashboard will attempt to auto discover the API server and connect
             # to it. Uncomment only if the default does not work.
@@ -219,6 +219,8 @@ spec:
       tolerations:
         - key: node-role.kubernetes.io/master
           effect: NoSchedule
+        - key: node-role.kubernetes.io/control-plane
+          effect: NoSchedule
 {% endif %}
 
 ---
@@ -235,7 +237,6 @@ spec:
   ports:
     - port: 443
       targetPort: 8443
-  type: ClusterIP 
   selector:
     k8s-app: kubernetes-dashboard
 
@@ -316,5 +317,7 @@ spec:
 {% if dashboard_master_toleration %}
       tolerations:
         - key: node-role.kubernetes.io/master
+          effect: NoSchedule
+        - key: node-role.kubernetes.io/control-plane
           effect: NoSchedule
 {% endif %}
